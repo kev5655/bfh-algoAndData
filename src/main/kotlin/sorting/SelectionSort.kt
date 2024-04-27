@@ -1,5 +1,6 @@
 package sorting
 
+import sorting.helper.swap
 
 
 fun selectionSortImperative(array: IntArray): IntArray {
