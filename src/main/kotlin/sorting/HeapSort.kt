@@ -20,7 +20,7 @@ fun heapify(tree: TreeNode<Int>) {
 
 
     if (lowNode.element!! > lowNode.parent!!.element!!) {
-        changeNode(lowNode, lowNode.parent)
+//        changeNode(lowNode, lowNode.parent)
     }
 
 
