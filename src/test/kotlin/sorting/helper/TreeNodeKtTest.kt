@@ -75,7 +75,9 @@ class TreeNodeKtTest {
                 51
             ), null
         )
+        assertNotNull(tree)
         printTree(tree)
+        getLastParents(tree).forEach { println("Tree with root: ${it.element}"); printTree(it) }
 
     }
 
