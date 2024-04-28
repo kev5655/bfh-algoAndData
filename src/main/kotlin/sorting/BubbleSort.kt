@@ -1,7 +1,5 @@
 package sorting
 
-import sorting.helper.swap
-
 
 fun bubbleSortImperative(array: IntArray): IntArray {
     var hasSwapped = false
@@ -16,6 +14,10 @@ fun bubbleSortImperative(array: IntArray): IntArray {
     }
 
     return array
+}
+
+fun swap(array: IntArray, i1: Int, i2: Int) {
+    array[i1] = array[i2].also { array[i2] = array[i1] }
 }
 
 

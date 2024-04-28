@@ -1,19 +1,17 @@
 package sorting
 
-import sorting.helper.swap
-
 
 fun selectionSortImperative(array: IntArray): IntArray {
     val size = array.size
 
-    for ( i in 0 until size) {
+    for (i in 0 until size) {
         var minIndex = i
         for (j in i until size) {
-            if(array[minIndex] > array[j]){
+            if (array[minIndex] > array[j]) {
                 minIndex = j
             }
         }
-        if(i != minIndex) swap(array, i, minIndex)
+        if (i != minIndex) swap(array, i, minIndex)
     }
     return array
 }
@@ -25,10 +23,6 @@ fun selectionSortDeclarative(array: IntArray): IntArray {
     }
     return array
 }
-
-
-
-
 
 fun main() {
     val intArray = intArrayOf(3, 7, 9, 5, 8, 2, 1, 6, 4)

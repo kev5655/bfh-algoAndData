@@ -1,15 +1,19 @@
 package sorting.helper
 
-fun createTree(array: IntArray): MutableList<TreeNode<Int>> {
-    if (array.size == 0) return mutableListOf()
-    if (array.size == 1) return mutableListOf(nodeOf(array[0]))
+// Creating a try by the SiftUp order form a list see https://en.wikipedia.org/wiki/Heapsort
+fun createTreeBySiftUp(array: IntArray, parent: TreeNode<Int>?): TreeNode<Int>? {
+    if (array.isEmpty()) return null
+    if (array.size == 1) return nodeOf(array[0])
     val first = array[0]
     val newArray = array.copyOfRange(1, array.size)
     val (left, right) = split2Pow(newArray)
-    return mutableListOf(TreeNode(first, createTree(left) + createTree(right)))
+    val root = TreeNode(first, parent)
+    root.right = createTreeBySiftUp(right, root)
+    root.left = createTreeBySiftUp(left, root)
+    return root
 }
 
-fun split2Pow(array: IntArray): Pair<IntArray, IntArray> {
+private fun split2Pow(array: IntArray): Pair<IntArray, IntArray> {
     val left = mutableListOf<Int>()
     val right = mutableListOf<Int>()
     alternatingBooleanListByPow(array.size).forEachIndexed { i, item ->
@@ -21,7 +25,7 @@ fun split2Pow(array: IntArray): Pair<IntArray, IntArray> {
     return Pair(left.toIntArray(), right.toIntArray())
 }
 
-fun alternatingBooleanListByPow(size: Int): BooleanArray {
+private fun alternatingBooleanListByPow(size: Int): BooleanArray {
     var changer = false
     var counter = 0
     val doubleSumPowList = doubleSumPowList()
@@ -37,8 +41,9 @@ fun alternatingBooleanListByPow(size: Int): BooleanArray {
     return list
 }
 
-fun doubleSumPowList(): IntArray {
+private fun doubleSumPowList(): IntArray {
+    // Todo Fix the 20
     val doublePowList = powList(20).zip(powList(20)).flatMap { (a, b) -> listOf(a, b) }
     return doublePowList.scan(0) { sum, element -> sum + element }.toIntArray()
 }
-fun powList(size: Int) = IntArray(size) { 1 shl it }
+private fun powList(size: Int) = IntArray(size) { 1 shl it }

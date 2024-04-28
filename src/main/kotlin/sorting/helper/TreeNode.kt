@@ -1,45 +1,34 @@
 package sorting.helper
 
+import java.util.*
+
 data class TreeNode<T>(
     var element: T,
     var parent: TreeNode<T>? = null,
-    var child: MutableList<TreeNode<T>> = mutableListOf()
+    var left: TreeNode<T>? = null,
+    var right: TreeNode<T>? = null,
 ) {
-    fun deepCopy(): TreeNode<T> {
-        val newNode = TreeNode(element, parent)  // Parent is usually not deep-copied to avoid circular references
-        newNode.child = child.map { it.deepCopy() }.toMutableList()
-        for (child in newNode.child) {
-            child.parent = newNode  // Ensuring the new children point back to the new node
-        }
+    fun deepCopy(parent: TreeNode<T>? = null): TreeNode<T> {
+        val newNode = TreeNode(element, parent)
+        newNode.left = left?.deepCopy(newNode)
+        newNode.right = right?.deepCopy(newNode)
         return newNode
     }
 }
 
-
-fun <T> changeNode(node: TreeNode<T>, newParent: TreeNode<T>) {
-    val saveNode = node.deepCopy()
-    node.element = newParent.element
-    node.parent = newParent.parent
-    node.child = newParent.child
-    newParent.element = saveNode.element
-    newParent.parent = saveNode.parent
-    newParent.child = saveNode.child
+fun <T> swapNode(a: TreeNode<T>, b: TreeNode<T>){
+    a.element = b.element.also { b.element = a.element }
 }
 
-fun <T> getFistLastNode(treeNode: TreeNode<T>): TreeNode<T> {
-    if (treeNode.child.isEmpty()) {
-        return treeNode
+fun <T> getLastParents(tree: TreeNode<T>): List<TreeNode<T>> {
+    if(tree.left?.left == null &&
+        tree.left?.right == null &&
+        tree.right?.left == null &&
+        tree.right?.right == null) {
+        return listOf(tree)
     }
-    return getFistLastNode(treeNode.child[0])
-}
 
-fun <T> getLastNodes(treeNode: TreeNode<T>): List<T> {
-    val lastNode = mutableListOf<T>()
-
-    if (treeNode.child.isEmpty()) {
-        return lastNode
-    }
-    return treeNode.child.map { getLastNodes(it) }.flatMap { (a, b) -> listOf(a, b) }
+    return getLastParents(tree.left!!) + getLastParents(tree.right!!)
 }
 
 
@@ -47,14 +36,39 @@ fun <T> nodeOf(x: T): TreeNode<T> {
     return TreeNode(x)
 }
 
-fun <T> printTree(node: TreeNode<T>?, depth: Int = 0) {
-    node ?: return // If the node is null, return
+fun <T> printTree(root: TreeNode<T>?) {
+    if (root == null) return
+    val queue: Queue<Pair<TreeNode<T>, Int>> = LinkedList()
+    queue.add(root to 0)
+    var currentLevel = 0
+    var line = StringBuilder()
+    val levelNodes = mutableListOf<String>()
 
-    // Print the current node's value with indentation based on its depth in the tree
-    println("--".repeat(depth * 2) + node.element.toString())
+    while (queue.isNotEmpty()) {
+        val (node, level) = queue.poll()
 
-    // Recursively print each child, increasing the depth to add indentation
-    for (child in node.child) {
-        printTree(child, depth + 1)
+        // When the level changes, process and print the previous level
+        if (level != currentLevel) {
+            printLevel(levelNodes, currentLevel)
+            levelNodes.clear()
+            currentLevel = level
+        }
+
+        // Formatting node value as a string
+        levelNodes.add("${node.element}")
+
+        // Adding children to the queue with their respective levels
+        node.left?.let { queue.add(it to level + 1) }
+        node.right?.let { queue.add(it to level + 1) }
     }
+
+    // Print the last level collected
+    printLevel(levelNodes, currentLevel)
+}
+
+fun printLevel(levelNodes: List<String>, level: Int) {
+    // Calculate indent for the current level
+    val indent = " ".repeat((1 shl (4 - level)) - 1)
+    val betweenSpace = " ".repeat((1 shl (5 - level)) - 1)
+    println(indent + levelNodes.joinToString(betweenSpace))
 }

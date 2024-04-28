@@ -1,28 +1,20 @@
 package sorting
 
-import sorting.helper.TreeNode
-import sorting.helper.createTree
-import sorting.helper.getFistLastNode
-import sorting.helper.printTree
+import sorting.helper.*
 
 
 fun hashSort(array: IntArray): IntArray {
-    val tree = createTree(array)[0]
+    val tree = createTreeBySiftUp(array, null)
     printTree(tree)
 
-    heapify(tree)
+    tree?.let { heapify(it) }
 
     return intArrayOf()
 }
 
 fun heapify(tree: TreeNode<Int>) {
-    val lowNode = getFistLastNode(tree)
-
-
-    if (lowNode.element!! > lowNode.parent!!.element!!) {
-//        changeNode(lowNode, lowNode.parent)
-    }
-
+   val lastP = getLastParents(tree)
+    lastP.forEach { println("Tree with Root ${it.element}"); printTree(it) }
 
 
 }
