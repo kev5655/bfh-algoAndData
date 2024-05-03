@@ -81,6 +81,9 @@ class TreeNodeKtTest {
 
     }
 
+
+
+
     private fun swap5And2(tree: TreeNode<Int>) = swapNode(tree, tree.left!!)
     private fun swap10And1(tree: TreeNode<Int>) = swapNode(tree.right?.right!!, tree.left?.right?.left!!)
 }

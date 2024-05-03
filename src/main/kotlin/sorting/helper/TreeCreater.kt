@@ -3,7 +3,7 @@ package sorting.helper
 // Creating a try by the SiftUp order form a list see https://en.wikipedia.org/wiki/Heapsort
 fun createTreeBySiftUp(array: IntArray, parent: TreeNode<Int>?): TreeNode<Int>? {
     if (array.isEmpty()) return null
-    if (array.size == 1) return nodeOf(array[0])
+    if (array.size == 1) return TreeNode(array[0], parent)
     val first = array[0]
     val newArray = array.copyOfRange(1, array.size)
     val (left, right) = split2Pow(newArray)

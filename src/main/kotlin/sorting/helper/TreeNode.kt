@@ -14,21 +14,80 @@ data class TreeNode<T>(
         newNode.right = right?.deepCopy(newNode)
         return newNode
     }
+    fun destroy() {
+        if (this == parent?.left) {
+            parent?.left = null
+        } else if (this == parent?.right) {
+            parent?.right = null
+        }
+        parent = null
+        left = null
+        right = null
+    }
+
+    override fun toString(): String {
+        return "TreeNode(element=$element, parent=$parent)"
+    }
+
 }
 
-fun <T> swapNode(a: TreeNode<T>, b: TreeNode<T>){
+fun TreeNode<Int>.swapGreater(child: TreeNode<Int>?) {
+    child?.takeIf { this.element < it.element }?.let { swapNode(this, it) }
+}
+
+fun <T> swapNode(a: TreeNode<T>, b: TreeNode<T>) {
     a.element = b.element.also { b.element = a.element }
 }
 
 fun <T> getLastParents(tree: TreeNode<T>): List<TreeNode<T>> {
-    if(tree.left?.left == null &&
+    if (tree.left?.left == null &&
         tree.left?.right == null &&
         tree.right?.left == null &&
-        tree.right?.right == null) {
+        tree.right?.right == null
+    ) {
         return listOf(tree)
     }
 
     return getLastParents(tree.left!!) + getLastParents(tree.right!!)
+}
+
+//fun <T>getLastNode(tree: TreeNode<T>?): List<TreeNode<T>> {
+//    if(tree == null) return listOf()
+//    if(tree.left == null && tree.right == null) return listOf(tree)
+//
+//    return getLastNode(tree.right) + getLastNode(tree.left)
+//}
+
+
+
+fun <T> getLastNode(tree: TreeNode<T>): TreeNode<T> {
+    if(tree.right == null && tree.left == null) {
+        getLastNode(tree.parent?.left!!)
+    }
+    if(tree.right == null && tree.left != null) {
+        return tree.left!!
+    }
+
+    return getLastNode(tree.right!!)
+
+}
+
+
+fun <T> getLastLeft(tree: TreeNode<T>): TreeNode<T> {
+    if(tree.left == null) return tree
+
+    return getLastNode(tree.left!!)
+}
+
+
+fun <T> getNodeByLevel(tree: TreeNode<T>?, level: Int, counter: Int = 0): List<TreeNode<T>> {
+    assert(level <= findMaxDepth(tree))
+    if (tree == null) return listOf()
+    if (counter == level) {
+        return listOf(tree)
+    }
+
+    return getNodeByLevel(tree.left, level, counter + 1) + getNodeByLevel(tree.right, level, counter + 1)
 }
 
 
@@ -65,6 +124,15 @@ fun <T> printTree(root: TreeNode<T>?) {
 
     // Print the last level collected
     printLevel(levelNodes, currentLevel, maxLevel)
+}
+
+fun <T> printTreeNormal(root: TreeNode<T>?) {
+    if(root == null) return
+    println(root)
+
+    printTreeNormal(root.left)
+    printTreeNormal(root.right)
+    return
 }
 
 fun printLevel(levelNodes: List<String>, level: Int, maxLevel: Int) {
