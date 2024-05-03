@@ -81,6 +81,49 @@ class TreeNodeKtTest {
 
     }
 
+    @Test
+    fun verifyLastNodeValueInFullBinaryTree() {
+        val array = intArrayOf(10, 3, 26, 9, 5, 31, 88, 45, 90, 89, 12, 43, 67, 32, 44)
+        val tree = createTreeBySiftUp(array, null)
+        printTree(tree)
+        val node = getLastNode(tree!!)
+
+        assertEquals(44, node.element)
+    }
+
+    @Test
+    fun `ensureLastRightNodeIsLeafInBinaryTree`() {
+        val array = intArrayOf(10, 3, 26, 9, 5, 31, 88, 45, 90, 89, 12, 43, 67)
+        val tree = createTreeBySiftUp(array, null)
+        printTree(tree)
+        val node = getLastNode(tree!!)
+
+        assertEquals(44, node.element)
+    }
+
+    @Test
+    fun getLastNode() {
+        val array = intArrayOf(10, 3, 26, 9, 5, 31)
+        val tree = createTreeBySiftUp(array, null)
+
+        printTree(tree)
+
+//        println(sorting.helper.getLastNode(tree!!))
+
+        val array2 = intArrayOf(10, 3, 26, 9, 5)
+        val tree2 = createTreeBySiftUp(array2, null)
+
+        printTree(tree2)
+
+//        println(sorting.helper.getLastNode(tree2!!))
+
+        val array3 = intArrayOf(10, 3, 26, 9, 5, 31, 32)
+        val tree3 = createTreeBySiftUp(array3, null)
+
+        printTree(tree3)
+
+//        println(sorting.helper.getLastNode(tree3!!))
+    }
 
 
 

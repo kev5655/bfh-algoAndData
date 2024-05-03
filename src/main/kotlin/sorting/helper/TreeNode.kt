@@ -14,6 +14,7 @@ data class TreeNode<T>(
         newNode.right = right?.deepCopy(newNode)
         return newNode
     }
+
     fun destroy() {
         if (this == parent?.left) {
             parent?.left = null
@@ -58,30 +59,69 @@ fun <T> getLastParents(tree: TreeNode<T>): List<TreeNode<T>> {
 //    return getLastNode(tree.right) + getLastNode(tree.left)
 //}
 
+fun <T> getLastNode(tree: TreeNode<T>, level: Int = 0, maxLevel: Int = 0): TreeNode<T> {
+    val newMaxLevel = maxOf(level, maxLevel)
 
-
-fun <T> getLastNode(tree: TreeNode<T>): TreeNode<T> {
-    if(tree.right == null && tree.left == null) {
+    if (tree.left == null && tree.right == null) {
+        println("I was on: ${tree.element} level: $level, maxLevel: $newMaxLevel")
         return tree.parent!!
     }
-    if(tree.right == null && tree.left != null) {
-        return tree.left!!
-    }
 
-     val parent = getLastNode(tree.right!!)
-    if(parent.left != null || parent.right != null) {
-        return getLastNode(tree.left!!)
-    }
-    return parent
+    val parent1 = getLastNode(tree.right!!, level + 1, newMaxLevel)
+    println("Return Parent 1: ${parent1.element}, current element ${tree.element} level: $level maxLevel: $newMaxLevel")
+    val parent2 = getLastNode(tree.left!!, level + 1, newMaxLevel)
+    println("Return Parent 2: ${parent2.element}, current element ${tree.element} level: $level maxLevel: $newMaxLevel")
 
+    return parent2.left ?: parent2
 }
 
+//fun <T> getLastNode(
+//    tree: TreeNode<T>,
+//    bestNode: Pair<Int, TreeNode<T>>, level: Int = 0
+//):
+//        Pair<TreeNode<T>, Pair<Int, TreeNode<T>>> {
+//
+//    var nextBestNode: Pair<Int, TreeNode<T>> = bestNode
+//    if (tree.right == null && tree.left == null) {
+//        nextBestNode = if (level > bestNode.first) {
+//            Pair(level, tree)
+//        } else {
+//            bestNode
+//        }
+//        println("I was on ${tree.element} level: $level bestNode: $nextBestNode")
+//        return Pair(tree.parent!!, nextBestNode)
+//    }
+//
+//    val parent = getLastNode(tree.right!!, nextBestNode, level + 1)
+//
+//    getLastNode(tree.left!!, nextBestNode, level + 1)
+//
+//    return Pair(parent.first, nextBestNode)
+//
+////    return nextBestNode?.second ?: bestNode.second
+//}
 
-fun <T> getLastLeft(tree: TreeNode<T>): TreeNode<T> {
-    if(tree.left == null) return tree
+//fun <T> getLastNode(tree: TreeNode<T>): Pair<Boolean, TreeNode<T>> {
+//    if (tree.right == null && tree.left == null) {
+//        println("I was on ${tree.element}")
+//        return Pair(false, tree.parent!!)
+//    }
+//    if (tree.right == null) {
+//        return Pair(true, tree.left!!)
+//    }
+//
+//    val parent = getLastNode(tree.right!!)
+//    if(parent.first) return parent
+//
+//    return getLastNode(tree.left!!)
+//}
 
-    return getLastNode(tree.left!!)
-}
+
+//fun <T> getLastLeft(tree: TreeNode<T>): TreeNode<T> {
+//    if (tree.left == null) return tree
+//
+//    return getLastNode(tree.left!!)
+//}
 
 
 fun <T> getNodeByLevel(tree: TreeNode<T>?, level: Int, counter: Int = 0): List<TreeNode<T>> {
@@ -131,7 +171,7 @@ fun <T> printTree(root: TreeNode<T>?) {
 }
 
 fun <T> printTreeNormal(root: TreeNode<T>?) {
-    if(root == null) return
+    if (root == null) return
     println(root)
 
     printTreeNormal(root.left)

@@ -16,9 +16,9 @@ fun hashSort(array: IntArray): IntArray {
         printTree(tree)
 
         val result = tree!!.element
-        val lastElement = getLastNode(tree)
-        swapNode(tree, lastElement)
-        getLastNode(tree).destroy()
+//        val (_, lastElement) = getLastNode(tree)
+//        swapNode(tree, lastElement)
+//        getLastNode(tree).second.destroy()
         println("After Destroy Tree with Root ${tree?.element}");
         printTree(tree)
         result
