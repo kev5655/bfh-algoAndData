@@ -62,13 +62,17 @@ fun <T> getLastParents(tree: TreeNode<T>): List<TreeNode<T>> {
 
 fun <T> getLastNode(tree: TreeNode<T>): TreeNode<T> {
     if(tree.right == null && tree.left == null) {
-        getLastNode(tree.parent?.left!!)
+        return tree.parent!!
     }
     if(tree.right == null && tree.left != null) {
         return tree.left!!
     }
 
-    return getLastNode(tree.right!!)
+     val parent = getLastNode(tree.right!!)
+    if(parent.left != null || parent.right != null) {
+        return getLastNode(tree.left!!)
+    }
+    return parent
 
 }
 
