@@ -98,7 +98,17 @@ class TreeNodeKtTest {
         printTree(tree)
         val node = getLastNode(tree!!)
 
-        assertEquals(44, node.element)
+        assertEquals(67, node.element)
+    }
+
+    @Test
+    fun `simpleBinaryTreeNotFull`() {
+        val array = intArrayOf(10, 3, 26, 9, 5)
+        val tree = createTreeBySiftUp(array, null)
+        printTree(tree)
+        val node = getLastNode(tree!!)
+
+        assertEquals(5, node.element)
     }
 
     @Test

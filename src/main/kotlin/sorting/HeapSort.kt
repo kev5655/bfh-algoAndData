@@ -1,30 +1,30 @@
 package sorting
 
 import sorting.helper.*
-import kotlin.system.exitProcess
 
 fun hashSort(array: IntArray): IntArray {
     val tree = createTreeBySiftUp(array, null)
 
-    printTreeNormal(tree)
+//    printTreeNormal(tree)
 
-    val sortetList = array.map { _ ->
-        println("Before Tree with Root ${tree?.element}");
-        printTree(tree)
-        tree?.let { heapify(it) }
-        println("After Tree with Root ${tree?.element}");
-        printTree(tree)
+    val sortedList = array.map { _ ->
+//        println("Before Tree with Root ${tree?.element}");
+//        printTree(tree)
+        if(tree?.left == null) return@map tree!!.element
+        heapify(tree)
+//        println("After Tree with Root ${tree.element}");
+//        printTree(tree)
 
-        val result = tree!!.element
-//        val (_, lastElement) = getLastNode(tree)
-//        swapNode(tree, lastElement)
-//        getLastNode(tree).second.destroy()
-        println("After Destroy Tree with Root ${tree?.element}");
-        printTree(tree)
+        val result = tree.element
+        val lastNode = getLastNode(tree)
+        swapNode(tree, lastNode)
+        getLastNode(tree).destroy()
+//        println("After Destroy Tree with Root ${tree?.element}");
+//        printTree(tree)
         result
     }
 
-    println(sortetList)
+    println("Sorted List $sortedList")
 
 
     return intArrayOf()
