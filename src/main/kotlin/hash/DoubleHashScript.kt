@@ -2,47 +2,53 @@ package hash
 
 class Data(val value: Int, val h1: Int, val h2: Int)
 
-fun main() {
-
-    val m = 13
-    val list = listOf(45, 27, 15, 78, 5, 19, 22, 38, 9, 28, 1)
-        .map { Data(it, hashFn1(it), hashFn2(it)) }
-    printHashTable(list)
-
-     doubleHashing(list, m).forEach { print(" $it, ") }
-
+private fun hashFn1(x: Int): Int {
+    return x % 13 // !!!UPDATE HASH FUNCTION
 }
 
-fun doubleHashing(list: List<Data>, size: Int): Array<Int?> {
-    val hashArray: Array<Int?> = arrayOfNulls(13)
+private fun hashFn2(x: Int): Int {
+    return 1 + (x % 11) // !!!UPDATE HASH FUNCTION
+}
+
+
+fun main() {
+
+    val m = 13 // !!!UPDATE TABLE_SIZE !!! 0 is included
+    val list = listOf(14, 21, 27, 28, 8, 18, 15, 36, 5, 2) // !!!UPDATE KEY'S
+        .map { calcHash(it, ::hashFn1, ::hashFn2) }
+    printHashTable(list)
+
+    doubleHashing(list, m).forEach { print(" $it, ") }
+}
+
+fun doubleHashing(list: List<Data>, tableSize: Int): Array<Int?> {
+    val hashArray: Array<Int?> = arrayOfNulls(tableSize)
 
     list.forEach { data ->
-        if(hashArray[data.h1] == null) {
+        if (hashArray[data.h1] == null) {
             hashArray[data.h1] = data.value
         } else {
-            var found = false
+            var attempts = 0
             var current = data.h1
-            while (!found) {
-                current = (current - data.h2) % size
-                if(hashArray[current] == null) {
-                    found = true
+            while (true) {
+                current = (current - data.h2 + tableSize) % tableSize
+                if (hashArray[current] == null) {
                     hashArray[current] = data.value
+                    break
+                }
+                attempts++
+                if (attempts >= tableSize) { // Guard against infinite loops
+                    throw IllegalStateException("Hash table is full or no empty slot found due to improper hash function.")
                 }
             }
         }
     }
 
     return hashArray
-
 }
 
-
-private fun hashFn1(x: Int): Int {
-    return x % 13
-}
-
-private fun hashFn2(x: Int): Int {
-    return 1 + (x % 11)
+fun calcHash(number: Int, hashFn1: (x: Int) -> Int, hashFn2: (x: Int) -> Int): Data {
+    return Data(number, hashFn1(number), hashFn2(number))
 }
 
 fun printHashTable(data: List<Data>) {
