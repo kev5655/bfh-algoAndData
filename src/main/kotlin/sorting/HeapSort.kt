@@ -16,9 +16,9 @@ fun hashSort(array: IntArray): IntArray {
 //        printTree(tree)
 
         val result = tree.element
-        val lastNode = getLastNode(tree)
-        swapNode(tree, lastNode)
-        getLastNode(tree).destroy()
+        val lastNode = getLastNodeFromBalancedTree(tree)
+        tree.swapWith(lastNode)
+        getLastNodeFromBalancedTree(tree).destroy()
 //        println("After Destroy Tree with Root ${tree?.element}");
 //        printTree(tree)
         result
@@ -37,10 +37,7 @@ fun heapify(tree: TreeNode<Int>, level: Int = findMaxDepth(tree) - 1) {
         it.swapGreater(it.left)
     }
 
-    if (level != 0) {
-        heapify(tree, level - 1)
-    }
-
+    if (level != 0) heapify(tree, level - 1)
     return
 }
 
