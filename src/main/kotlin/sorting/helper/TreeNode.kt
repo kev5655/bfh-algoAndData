@@ -61,13 +61,11 @@ fun <T> getLastParents(tree: TreeNode<T>): List<TreeNode<T>> {
 
 fun <T> getLastNode(tree: TreeNode<T>): TreeNode<T> {
     val h = findLeftDepth(tree)
-
     if(h == 1) {
         return tree
     }
 
     val x = findLeftDepth(tree.right)
-
     return if(h - 1 <= x) {
         getLastNode(tree.right!!)
     } else {
@@ -160,21 +158,21 @@ fun <T> findMaxDepth(node: TreeNode<T>?): Int {
 
 
 
-//fun <T> getLastNode(tree: TreeNode<T>, level: Int = 0, maxLevel: Int = 0): TreeNode<T> {
-//    val newMaxLevel = maxOf(level, maxLevel)
-//
-//    if (tree.left == null && tree.right == null) {
-//        println("I was on: ${tree.element} level: $level, maxLevel: $newMaxLevel")
-//        return tree.parent!!
-//    }
-//
-//    val parent1 = getLastNode(tree.right!!, level + 1, newMaxLevel)
-//    println("Return Parent 1: ${parent1.element}, current element ${tree.element} level: $level maxLevel: $newMaxLevel")
-//    val parent2 = getLastNode(tree.left!!, level + 1, newMaxLevel)
-//    println("Return Parent 2: ${parent2.element}, current element ${tree.element} level: $level maxLevel: $newMaxLevel")
-//
-//    return parent2.left ?: parent2
-//}
+fun <T> getLastNode(tree: TreeNode<T>, level: Int = 0, maxLevel: Int = 0): TreeNode<T> {
+    val newMaxLevel = maxOf(level, maxLevel)
+
+    if (tree.left == null && tree.right == null) {
+        println("I was on: ${tree.element} level: $level, maxLevel: $newMaxLevel")
+        return tree.parent!!
+    }
+
+    val parent1 = getLastNode(tree.right!!, level + 1, newMaxLevel)
+    println("Return Parent 1: ${parent1.element}, current element ${tree.element} level: $level maxLevel: $newMaxLevel")
+    val parent2 = getLastNode(tree.left!!, level + 1, newMaxLevel)
+    println("Return Parent 2: ${parent2.element}, current element ${tree.element} level: $level maxLevel: $newMaxLevel")
+
+    return parent2.left ?: parent2
+}
 
 //fun <T> getLastNode(
 //    tree: TreeNode<T>,
