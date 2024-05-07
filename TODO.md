@@ -3,6 +3,6 @@
 # Todo
 
 Kevin
-- [ ] HeapSorting
 - [ ] BinarySearch
+- [ ] Hashing
 

@@ -1,0 +1,6 @@
+package hash
+
+
+fun main() {
+
+}
