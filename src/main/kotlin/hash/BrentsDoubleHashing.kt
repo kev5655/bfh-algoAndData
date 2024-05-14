@@ -1,21 +1,27 @@
 package hash
 
+import java.lang.Math.floorMod
+
 
 private fun hashFn(x: Int): Int {
-    return x % 13 // !!!UPDATE HASH FUNCTION
+    return floorMod(x, 13) // !!!UPDATE HASH FUNCTION
 }
 
 private fun dynamicHashFn(index: Int, value: Int): Int {
 //    return index - (1 + value % 11) % 13 // !!!UPDATE HASH FUNCTION
-    return hashFn(index - (1 + value % 11))
+    val x = hashFn(index - floorMod(1 + value, 11))
+    return x
 }
 
 
 fun main() {
 
+    val m = 13 // !!!UPDATE TABLE_SIZE !!! 0 is included
     val list = listOf(14, 21, 27, 28, 8, 18, 15, 36, 5, 2) // !!!UPDATE KEY'S
         .map { calcHash(it, ::hashFn) { _: Int -> 0 } }
     printHashTable(list)
+
+    brentsDoubleHashing(list, m)
 
 }
 
@@ -26,21 +32,22 @@ fun brentsDoubleHashing(list: List<Data>, tableSize: Int): Array<Int?> {
         if (hashArray[data.h1] == null) {
             hashArray[data.h1] = data.value
         } else {
-            var index = data.h1
-            val oldValue = hashArray[data.h1]!!
-            val newH1 = dynamicHashFn(index, data.value)
-            val oldH2 = dynamicHashFn(index, oldValue)
+            var currentIndex = data.h1
+            var currentValue = hashArray[data.h1]!!
 
             while (true) {
-                if (hashArray[newH1] == null) {
-                    hashArray[newH1] = data.value
+                val nextIndex = dynamicHashFn(currentIndex, data.value)
+                if (hashArray[nextIndex] == null) {
+                    hashArray[nextIndex] = data.value
                     break;
                 }
-                if (hashArray[oldH2] == null) {
-                    hashArray[oldH2] == data.value
+                val fallbackIndex = dynamicHashFn(currentIndex, currentValue)
+                if (hashArray[fallbackIndex] == null) {
+                    hashArray[fallbackIndex] == data.value
                     break;
                 }
-
+                currentIndex = nextIndex
+                currentValue = hashArray[fallbackIndex]!!
 
             }
         }
