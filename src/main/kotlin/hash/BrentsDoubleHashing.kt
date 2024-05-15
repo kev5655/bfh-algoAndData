@@ -19,9 +19,9 @@ fun main() {
     val m = 13 // !!!UPDATE TABLE_SIZE !!! 0 is included
     val list = listOf(14, 21, 27, 28, 8, 18, 15, 36, 5, 2) // !!!UPDATE KEY'S
         .map { calcHash(it, ::hashFn) { _: Int -> 0 } }
-    printHashTable(list)
+   printHashTable(list)
 
-    brentsDoubleHashing(list, m)
+    brentsDoubleHashing(list, m).forEach { print(" $it, ") }
 
 }
 
@@ -43,16 +43,17 @@ fun brentsDoubleHashing(list: List<Data>, tableSize: Int): Array<Int?> {
                 }
                 val fallbackIndex = dynamicHashFn(currentIndex, currentValue)
                 if (hashArray[fallbackIndex] == null) {
-                    hashArray[fallbackIndex] == data.value
+                    hashArray[fallbackIndex] = hashArray[currentIndex]
+                    hashArray[currentIndex] = data.value
                     break;
                 }
                 currentIndex = nextIndex
-                currentValue = hashArray[fallbackIndex]!!
+                currentValue = hashArray[nextIndex]!!
 
             }
         }
     }
 
 
-    return arrayOf()
+    return hashArray
 }
