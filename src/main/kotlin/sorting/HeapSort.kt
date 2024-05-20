@@ -4,9 +4,7 @@ import sorting.helper.*
 
 fun hashSort(array: IntArray): IntArray {
     val tree = createTreeBySiftUp(array, null)
-
 //    printTreeNormal(tree)
-
     val sortedList = array.map { _ ->
 //        println("Before Tree with Root ${tree?.element}");
 //        printTree(tree)
@@ -14,7 +12,6 @@ fun hashSort(array: IntArray): IntArray {
         heapify(tree)
 //        println("After Tree with Root ${tree.element}");
 //        printTree(tree)
-
         val result = tree.element
         val lastNode = getLastNodeFromBalancedTree(tree)
         tree.swapWith(lastNode)
