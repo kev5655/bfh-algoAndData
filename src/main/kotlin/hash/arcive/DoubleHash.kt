@@ -1,4 +1,4 @@
-package hash
+package hash.arcive
 
 
 class DoubleHash<T>: Dictornary<T> {

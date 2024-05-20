@@ -1,4 +1,4 @@
-package hash
+package hash.arcive
 
 interface Dictornary<T> {
     fun insert(x: T)
