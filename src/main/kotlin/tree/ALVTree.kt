@@ -77,6 +77,10 @@ fun <T> leftRotation(alvTree: ALVTreeNode<T>) {
     alvTree.right = rightNode.right
     rootNode.parent = alvTree
     alvTree.left = rootNode
+    alvTree.right!!.parent = alvTree
+    alvTree.balance = 0
+    alvTree.right!!.balance = 0
+    alvTree.left!!.balance = 0
 }
 
 private fun <T : Comparable<T>> tryInsertLeft(alvTree: ALVTreeNode<T>, element: T) {
@@ -99,6 +103,7 @@ private fun <T : Comparable<T>> tryInsertRight(alvTree: ALVTreeNode<T>, element:
     }
 }
 
+// not work on 18 21 19 Since we cannot take the it.balance from the child node, we have to calculate the node depth
 fun <T> calcBalance(alvTree: ALVTreeNode<T>?) {
     if (alvTree == null) return
     alvTree.balance = (alvTree.right?.let {
