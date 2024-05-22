@@ -6,7 +6,6 @@ fun main() {
     val fist = list[0]
     val alv = nodeOf(fist, null)
     list.drop(1).forEach { insert(alv, it) }
-
 }
 
 data class ALVTreeNode<T>(
@@ -30,8 +29,6 @@ data class ALVTreeNode<T>(
         newNode.right = this.right?.deepCopy(newNode)
         return newNode
     }
-
-
 }
 
 fun <T> nodeOf(x: T, parent: ALVTreeNode<T>?): ALVTreeNode<T> {
@@ -47,20 +44,15 @@ fun <T : Comparable<T>> insert(alvTree: ALVTreeNode<T>, element: T): Unit? {
     }
     if (alvTree.balance == 2) {
         when {
-            alvTree.left?.balance == 1 -> {
-
-            }
-
-            alvTree.left?.balance == -1 -> {
-
-            }
-
+            alvTree.left?.balance == 1 -> {}
+            alvTree.left?.balance == -1 -> {}
             alvTree.right?.balance == 1 -> {
                 leftRotation(alvTree)
             }
 
             alvTree.right?.balance == -1 -> {
-
+                rightRotation(alvTree)
+                leftRotation(alvTree)
             }
         }
     }
@@ -83,6 +75,12 @@ fun <T> leftRotation(alvTree: ALVTreeNode<T>) {
     alvTree.left!!.balance = 0
 }
 
+fun <T> rightRotation(alvTree: ALVTreeNode<T>) {
+    val left = alvTree.right!!.left
+    alvTree.right!!.right = left
+    alvTree.right!!.left = null
+}
+
 private fun <T : Comparable<T>> tryInsertLeft(alvTree: ALVTreeNode<T>, element: T) {
     val leftNode = alvTree.left
     if (leftNode == null) {
@@ -103,23 +101,34 @@ private fun <T : Comparable<T>> tryInsertRight(alvTree: ALVTreeNode<T>, element:
     }
 }
 
-// not work on 18 21 19 Since we cannot take the it.balance from the child node, we have to calculate the node depth
 fun <T> calcBalance(alvTree: ALVTreeNode<T>?) {
     if (alvTree == null) return
-    alvTree.balance = (alvTree.right?.let {
-        it.balance + 1
-    } ?: 0) + (alvTree.left?.let {
-        it.balance - 1
-    } ?: 0)
+
+    alvTree.balance  = depth(alvTree.right) - depth(alvTree.left)
+
+    if (alvTree.balance == 2 || alvTree.balance == -2) return
     calcBalance(alvTree.parent)
 }
 
-//fun <T> calcBalanceDown(alvTree: ALVTreeNode<T>?) {
-//    if(alvTree == null) return
-//    var balance = 0
-//    if(alvTree.right != null) balance++
-//    if(alvTree.left != null) balance--
-//    alvTree.balance = balance
-//    calcBalance(alvTree.parent)
-//}
+private fun <T> depth(alvTree: ALVTreeNode<T>?): Int {
+    if (alvTree == null) return 0
+    val right = alvTree.right
+    val left = alvTree.left
+
+    return if (right != null) {
+        1 + depth(right)
+    } else if (left != null) {
+        1 + depth(left)
+    } else {
+        1
+    }
+}
+
+
+
+
+
+
+
+
 
