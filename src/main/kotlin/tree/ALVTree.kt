@@ -60,6 +60,33 @@ fun <T : Comparable<T>> insert(alvTree: ALVTreeNode<T>, element: T): Unit? {
 }
 
 fun <T> leftRotation(alvTree: ALVTreeNode<T>) {
+    val root = alvTree.right!!.deepCopy()
+    val right = alvTree.right!!.right!!.deepCopy()
+    val left = alvTree.deepCopy()
+
+    root.left = left
+    root.right = right
+    root.parent = alvTree.parent
+    root.balance = 0
+
+    //left.left = null
+    left.right = left.right?.left
+    left.parent = root
+    left.balance = 0
+
+    right.left = right.left?.right
+    right.parent = root
+    right.balance = 0
+
+    alvTree.left = root.left
+    alvTree.right = root.right
+    alvTree.parent = root.parent
+    alvTree.element = root.element
+    alvTree.balance = 0
+
+}
+
+fun <T> leftRotationOld(alvTree: ALVTreeNode<T>) {
     alvTree.right!!.parent = null
     val rightNode = alvTree.right!!.deepCopy()
     alvTree.right = null
