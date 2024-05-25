@@ -51,7 +51,7 @@ fun <T : Comparable<T>> insert(alvTree: ALVTreeNode<T>, element: T): Unit? {
             }
 
             alvTree.right?.balance == -1 -> {
-                rightRotation(alvTree)
+                rightRotation(alvTree.right!!)
                 leftRotation(alvTree)
             }
         }
@@ -61,51 +61,41 @@ fun <T : Comparable<T>> insert(alvTree: ALVTreeNode<T>, element: T): Unit? {
 
 fun <T> leftRotation(alvTree: ALVTreeNode<T>) {
     val root = alvTree.right!!.deepCopy()
-    val right = alvTree.right!!.right!!.deepCopy()
     val left = alvTree.deepCopy()
 
+    left.right = null;
+
     root.left = left
+    root.parent = alvTree.parent
+    root.balance = 0
+
+    left.right = alvTree.right?.left
+    writeBack(left, root, alvTree)
+}
+
+fun <T> rightRotation(alvTree: ALVTreeNode<T>) {
+    val root = alvTree.left!!.deepCopy()
+    val right = alvTree.deepCopy()
+
+    right.left = null;
+
     root.right = right
     root.parent = alvTree.parent
     root.balance = 0
 
-    //left.left = null
-    left.right = left.right?.left
+    right.left = alvTree.left?.right
+    writeBack(right, root, alvTree)
+}
+
+private fun <T> writeBack(left: ALVTreeNode<T>, root: ALVTreeNode<T>, alvTree: ALVTreeNode<T>) {
     left.parent = root
     left.balance = 0
-
-    right.left = right.left?.right
-    right.parent = root
-    right.balance = 0
 
     alvTree.left = root.left
     alvTree.right = root.right
     alvTree.parent = root.parent
     alvTree.element = root.element
     alvTree.balance = 0
-
-}
-
-fun <T> leftRotationOld(alvTree: ALVTreeNode<T>) {
-    alvTree.right!!.parent = null
-    val rightNode = alvTree.right!!.deepCopy()
-    alvTree.right = null
-    val rootNode = alvTree.deepCopy()
-    alvTree.element = rightNode.element
-    rightNode.left = rootNode
-    alvTree.right = rightNode.right
-    rootNode.parent = alvTree
-    alvTree.left = rootNode
-    alvTree.right!!.parent = alvTree
-    alvTree.balance = 0
-    alvTree.right!!.balance = 0
-    alvTree.left!!.balance = 0
-}
-
-fun <T> rightRotation(alvTree: ALVTreeNode<T>) {
-    val left = alvTree.right!!.left
-    alvTree.right!!.right = left
-    alvTree.right!!.left = null
 }
 
 private fun <T : Comparable<T>> tryInsertLeft(alvTree: ALVTreeNode<T>, element: T) {
@@ -150,6 +140,22 @@ private fun <T> depth(alvTree: ALVTreeNode<T>?): Int {
         1
     }
 }
+
+//fun <T> leftRotationOld(alvTree: ALVTreeNode<T>) {
+//    alvTree.right!!.parent = null
+//    val rightNode = alvTree.right!!.deepCopy()
+//    alvTree.right = null
+//    val rootNode = alvTree.deepCopy()
+//    alvTree.element = rightNode.element
+//    rightNode.left = rootNode
+//    alvTree.right = rightNode.right
+//    rootNode.parent = alvTree
+//    alvTree.left = rootNode
+//    alvTree.right!!.parent = alvTree
+//    alvTree.balance = 0
+//    alvTree.right!!.balance = 0
+//    alvTree.left!!.balance = 0
+//}
 
 
 
