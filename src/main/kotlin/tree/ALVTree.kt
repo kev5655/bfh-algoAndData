@@ -13,10 +13,11 @@ data class ALVTreeNode<T>(
     var parent: ALVTreeNode<T>? = null,
     var left: ALVTreeNode<T>? = null,
     var right: ALVTreeNode<T>? = null,
-    var balance: Int = 0,
+    var balance: Int? = 0,
 ) {
     override fun toString(): String {
-        return "TreeNode(element=$element, parent=$parent)"
+        return "TreeNode(element=$element, parent=${parent?.element ?: "null"}," +
+                " left=${left?.element ?: "null"}, right=${right?.element ?: "null"})"
     }
 
     fun deepCopy(parent: ALVTreeNode<T>? = null): ALVTreeNode<T> {
@@ -28,6 +29,32 @@ data class ALVTreeNode<T>(
         newNode.left = this.left?.deepCopy(newNode)
         newNode.right = this.right?.deepCopy(newNode)
         return newNode
+    }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as ALVTreeNode<*>
+
+        if (element != other.element) return false
+        if (balance != other.balance) return false
+
+        // Compare references for parent, left, and right nodes
+        if (parent !== other.parent) return false
+        if (left !== other.left) return false
+        if (right !== other.right) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = element?.hashCode() ?: 0
+        result = 31 * result + (parent?.let { System.identityHashCode(it) } ?: 0)
+        result = 31 * result + (left?.let { System.identityHashCode(it) } ?: 0)
+        result = 31 * result + (right?.let { System.identityHashCode(it) } ?: 0)
+        result = 31 * result + (balance ?: 0)
+        return result
     }
 }
 
@@ -42,7 +69,7 @@ fun <T : Comparable<T>> insert(alvTree: ALVTreeNode<T>, element: T): Unit? {
         element < alvTree.element -> tryInsertLeft(alvTree, element)
         element == alvTree.element -> return null
     }
-    if (alvTree.balance == 2) {
+    alvTree.balance.takeIf { it == 2 }?.let {
         when {
             alvTree.left?.balance == 1 -> {}
             alvTree.left?.balance == -1 -> {}
@@ -56,6 +83,9 @@ fun <T : Comparable<T>> insert(alvTree: ALVTreeNode<T>, element: T): Unit? {
             }
         }
     }
+//    if (alvTree.balance == 2) {
+//
+//    }
     return null
 }
 
@@ -78,12 +108,14 @@ fun <T> rightRotation(alvTree: ALVTreeNode<T>) {
     val right = alvTree.deepCopy()
 
     right.left = null;
+    right.parent = root
 
     root.right = right
     root.parent = alvTree.parent
     root.balance = 0
 
     right.left = alvTree.left?.right
+    right.left?.parent = right
     writeBack(right, root, alvTree)
 }
 
@@ -108,7 +140,7 @@ private fun <T : Comparable<T>> tryInsertLeft(alvTree: ALVTreeNode<T>, element: 
     }
 }
 
-private fun <T : Comparable<T>> tryInsertRight(alvTree: ALVTreeNode<T>, element: T) {
+fun <T : Comparable<T>> tryInsertRight(alvTree: ALVTreeNode<T>, element: T) {
     val rightNode = alvTree.right
     if (rightNode == null) {
         alvTree.right = nodeOf(element, alvTree)
@@ -121,7 +153,7 @@ private fun <T : Comparable<T>> tryInsertRight(alvTree: ALVTreeNode<T>, element:
 fun <T> calcBalance(alvTree: ALVTreeNode<T>?) {
     if (alvTree == null) return
 
-    alvTree.balance  = depth(alvTree.right) - depth(alvTree.left)
+    alvTree.balance = depth(alvTree.right) - depth(alvTree.left)
 
     if (alvTree.balance == 2 || alvTree.balance == -2) return
     calcBalance(alvTree.parent)
