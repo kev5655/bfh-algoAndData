@@ -64,27 +64,30 @@ fun <T> nodeOf(x: T, parent: ALVTreeNode<T>?): ALVTreeNode<T> {
 }
 
 
-fun <T : Comparable<T>> insert(alvTree: ALVTreeNode<T>, element: T): Unit? {
+fun <T : Comparable<T>> insert(alvTree: ALVTreeNode<T>, element: T) {
     when {
         element > alvTree.element -> tryInsertRight(alvTree, element)
         element < alvTree.element -> tryInsertLeft(alvTree, element)
-        element == alvTree.element -> return null
+        element == alvTree.element -> return
     }
-    if (alvTree.balance == 2) {
-        when {
-            alvTree.left?.balance == 1 -> {}
-            alvTree.left?.balance == -1 -> {}
-            alvTree.right?.balance == 1 -> {
-                leftRotation(alvTree)
-            }
-
-            alvTree.right?.balance == -1 -> {
+    when (alvTree.balance) {
+        2 -> when (alvTree.right?.balance) {
+            1 -> leftRotation(alvTree)
+            -1 -> {
                 rightRotation(alvTree.right!!)
                 leftRotation(alvTree)
             }
         }
+        -2 -> when (alvTree.left?.balance) {
+            -1 -> rightRotation(alvTree)
+            1 -> {
+                leftRotation(alvTree.left!!)
+                rightRotation(alvTree)
+            }
+        }
     }
-    return null
+
+    return
 }
 
 fun <T> leftRotation(alvTree: ALVTreeNode<T>) {
