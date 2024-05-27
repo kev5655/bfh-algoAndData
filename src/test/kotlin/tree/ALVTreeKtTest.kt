@@ -86,8 +86,8 @@ class ALVTreeKtTest {
         assertNotNull(tree.right!!.parent)
         assertTrue(tree.right!!.parent == tree)
         assertEquals(18, tree.right!!.element)
-        assertNotNull(tree.left!!.parent)
-        assertTrue(tree.left!!.parent == tree)
+        assertNotNull(tree.right!!.parent)
+        assertTrue(tree.right!!.parent == tree)
         assertEquals(7, tree.left!!.element)
 
         val tree1 = nodeOf(20, null)
@@ -269,7 +269,7 @@ class ALVTreeKtTest {
     }
 
     @Test
-    fun insertRight() {
+    fun insertRightInsert() {
         val list = listOf(7, 12, 18, 21, 19, 34)
         val fist = list[0]
         val alv = nodeOf(fist, null)
@@ -278,13 +278,44 @@ class ALVTreeKtTest {
         insert(alv, list[3]) // 21
         insert(alv, list[4]) // 19
 
-        val node21 = alv.right!!.right!!
-
         tryInsertRight(alv, list[5])
         assertEquals(2, alv.balance)
         assertEquals(1, alv.right!!.balance)
         assertEquals(1, alv.right!!.right!!.balance)
 
+    }
+
+    @Test
+    fun insertRightWithoutInsert() {
+//        val list = listOf(7, 12, 18, 21, 19, 34)
+        val alv = nodeOf(12, null)
+        alv.right = nodeOf(19, alv)
+        alv.right!!.right = nodeOf(21, alv.right)
+        alv.right!!.left = nodeOf(18, alv.right)
+        alv.left = nodeOf(7, alv)
+
+        val node21 = alv.right!!.right!!
+
+        tryInsertRight(alv, 34)
+        assertEquals(2, alv.balance)
+        assertEquals(1, alv.right!!.balance)
+        assertEquals(1, alv.right!!.right!!.balance)
+
+    }
+
+    @Test
+    fun calcBalance() {
+        val list = listOf(7, 12, 18, 21, 19, 34)
+        val fist = list[0]
+        val alv = nodeOf(fist, null)
+        alv.right = nodeOf(list[1], alv)
+        alv.right!!.right = nodeOf(list[2], alv.right)
+
+        calcBalance(alv.right!!.right)
+
+        assertEquals(0, alv.right!!.right!!.balance)
+        assertEquals(1, alv.right!!.balance)
+        assertEquals(2, alv.balance)
     }
 
 

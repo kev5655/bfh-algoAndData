@@ -13,7 +13,7 @@ data class ALVTreeNode<T>(
     var parent: ALVTreeNode<T>? = null,
     var left: ALVTreeNode<T>? = null,
     var right: ALVTreeNode<T>? = null,
-    var balance: Int? = 0,
+    var balance: Int = 0,
 ) {
     override fun toString(): String {
         return "TreeNode(element=$element, parent=${parent?.element ?: "null"}," +
@@ -23,9 +23,10 @@ data class ALVTreeNode<T>(
     fun deepCopy(parent: ALVTreeNode<T>? = null): ALVTreeNode<T> {
         val newNode = ALVTreeNode(
             element = this.element,
-            parent = parent,
+//            parent = parent,
             balance = this.balance
         )
+        newNode.parent = parent
         newNode.left = this.left?.deepCopy(newNode)
         newNode.right = this.right?.deepCopy(newNode)
         return newNode
@@ -53,7 +54,7 @@ data class ALVTreeNode<T>(
         result = 31 * result + (parent?.let { System.identityHashCode(it) } ?: 0)
         result = 31 * result + (left?.let { System.identityHashCode(it) } ?: 0)
         result = 31 * result + (right?.let { System.identityHashCode(it) } ?: 0)
-        result = 31 * result + (balance ?: 0)
+        result = 31 * result + balance
         return result
     }
 }
@@ -69,7 +70,7 @@ fun <T : Comparable<T>> insert(alvTree: ALVTreeNode<T>, element: T): Unit? {
         element < alvTree.element -> tryInsertLeft(alvTree, element)
         element == alvTree.element -> return null
     }
-    alvTree.balance.takeIf { it == 2 }?.let {
+    if (alvTree.balance == 2) {
         when {
             alvTree.left?.balance == 1 -> {}
             alvTree.left?.balance == -1 -> {}
@@ -83,40 +84,59 @@ fun <T : Comparable<T>> insert(alvTree: ALVTreeNode<T>, element: T): Unit? {
             }
         }
     }
-//    if (alvTree.balance == 2) {
-//
-//    }
     return null
 }
 
 fun <T> leftRotation(alvTree: ALVTreeNode<T>) {
-    val root = alvTree.right!!.deepCopy()
-    val left = alvTree.deepCopy()
+    val rootRoot = alvTree.parent
 
-    left.right = null;
-
-    root.left = left
-    root.parent = alvTree.parent
+    val root = alvTree.right!!
+    root.parent = null
     root.balance = 0
+    val saveLeft = root.left?.deepCopy()
+    saveLeft?.parent = null
 
-    left.right = alvTree.right?.left
-    writeBack(left, root, alvTree)
+    alvTree.parent = null
+    alvTree.balance = 0
+    alvTree.right = saveLeft
+    val alvTreeCopy = alvTree.deepCopy()
+    root.left = alvTreeCopy
+
+    alvTree.left = root.left?.deepCopy()
+    alvTree.right = root.right
+    alvTree.element = root.element
+    alvTree.balance = 0
+
+    alvTree.parent = rootRoot
+    alvTree.left?.parent = alvTree
+    alvTree.left?.right?.parent = alvTree.left
+    alvTree.right?.parent = alvTree
 }
 
 fun <T> rightRotation(alvTree: ALVTreeNode<T>) {
-    val root = alvTree.left!!.deepCopy()
-    val right = alvTree.deepCopy()
+    val rootRoot = alvTree.parent
 
-    right.left = null;
-    right.parent = root
-
-    root.right = right
-    root.parent = alvTree.parent
+    val root = alvTree.left!!
+    root.parent = null
     root.balance = 0
+    val saveRight = root.right?.deepCopy()
+    saveRight?.parent = null
 
-    right.left = alvTree.left?.right
-    right.left?.parent = right
-    writeBack(right, root, alvTree)
+    alvTree.parent = null
+    alvTree.balance = 0
+    alvTree.left = saveRight
+    val alvTreeCopy = alvTree.deepCopy()
+    root.right = alvTreeCopy
+
+    alvTree.left = root.left
+    alvTree.right = root.right?.deepCopy()
+    alvTree.element = root.element
+    alvTree.balance = 0
+
+    alvTree.parent = rootRoot
+    alvTree.right?.parent = alvTree
+    alvTree.right?.left?.parent = alvTree.right
+    alvTree.left?.parent = alvTree
 }
 
 private fun <T> writeBack(left: ALVTreeNode<T>, root: ALVTreeNode<T>, alvTree: ALVTreeNode<T>) {
@@ -172,23 +192,6 @@ private fun <T> depth(alvTree: ALVTreeNode<T>?): Int {
         1
     }
 }
-
-//fun <T> leftRotationOld(alvTree: ALVTreeNode<T>) {
-//    alvTree.right!!.parent = null
-//    val rightNode = alvTree.right!!.deepCopy()
-//    alvTree.right = null
-//    val rootNode = alvTree.deepCopy()
-//    alvTree.element = rightNode.element
-//    rightNode.left = rootNode
-//    alvTree.right = rightNode.right
-//    rootNode.parent = alvTree
-//    alvTree.left = rootNode
-//    alvTree.right!!.parent = alvTree
-//    alvTree.balance = 0
-//    alvTree.right!!.balance = 0
-//    alvTree.left!!.balance = 0
-//}
-
 
 
 
