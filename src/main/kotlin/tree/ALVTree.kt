@@ -90,56 +90,57 @@ fun <T : Comparable<T>> insert(alvTree: ALVTreeNode<T>, element: T) {
     return
 }
 
+fun <T> updateAlvTree(alvTree: ALVTreeNode<T>, root: ALVTreeNode<T>, rootRoot: ALVTreeNode<T>?) {
+    alvTree.apply {
+        left = root.left?.deepCopy()
+        right = root.right
+        element = root.element
+        balance = 0
+        parent = rootRoot
+        left?.parent = this
+        left?.right?.parent = left
+        right?.parent = this
+    }
+}
+
 fun <T> leftRotation(alvTree: ALVTreeNode<T>) {
     val rootRoot = alvTree.parent
-
     val root = alvTree.right!!
+
     root.parent = null
     root.balance = 0
+
     val saveLeft = root.left?.deepCopy()
     saveLeft?.parent = null
 
     alvTree.parent = null
     alvTree.balance = 0
     alvTree.right = saveLeft
+
     val alvTreeCopy = alvTree.deepCopy()
     root.left = alvTreeCopy
 
-    alvTree.left = root.left?.deepCopy()
-    alvTree.right = root.right
-    alvTree.element = root.element
-    alvTree.balance = 0
-
-    alvTree.parent = rootRoot
-    alvTree.left?.parent = alvTree
-    alvTree.left?.right?.parent = alvTree.left
-    alvTree.right?.parent = alvTree
+    updateAlvTree(alvTree, root, rootRoot)
 }
 
 fun <T> rightRotation(alvTree: ALVTreeNode<T>) {
     val rootRoot = alvTree.parent
-
     val root = alvTree.left!!
+
     root.parent = null
     root.balance = 0
+
     val saveRight = root.right?.deepCopy()
     saveRight?.parent = null
 
     alvTree.parent = null
     alvTree.balance = 0
     alvTree.left = saveRight
+
     val alvTreeCopy = alvTree.deepCopy()
     root.right = alvTreeCopy
 
-    alvTree.left = root.left
-    alvTree.right = root.right?.deepCopy()
-    alvTree.element = root.element
-    alvTree.balance = 0
-
-    alvTree.parent = rootRoot
-    alvTree.right?.parent = alvTree
-    alvTree.right?.left?.parent = alvTree.right
-    alvTree.left?.parent = alvTree
+    updateAlvTree(alvTree, root, rootRoot)
 }
 
 private fun <T> writeBack(left: ALVTreeNode<T>, root: ALVTreeNode<T>, alvTree: ALVTreeNode<T>) {
