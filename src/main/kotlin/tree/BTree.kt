@@ -12,13 +12,13 @@ data class BTree<T>(
 )
 
 fun <T> nodeOf(element: T): BTree<T> {
-    val elements = MutableList<T?>(DEFAULT.MAX_SIZE + 1) { null }
-    elements[0] = element
+    val elements = MutableList<T?>(DEFAULT.MAX_SIZE) { null }
+    elements[DEFAULT.MAX_SIZE / 2] = element
     return BTree(elements)
 }
 
 fun <T> nodeOf(elements: List<T>): BTree<T> {
-    assert(elements.size > DEFAULT.MAX_SIZE) { System.err.println("elements don't match expected size, elements: $elements") }
+    assert(elements.size < DEFAULT.MAX_SIZE) { System.err.println("elements don't match expected size, elements: $elements") }
     return BTree(elements)
 }
 
@@ -32,41 +32,62 @@ fun main() {
 
 fun <T : Comparable<T>> insert(bTree: BTree<T>, x: T) {
 
-    if (bTree.links == null) insertIntoNode(bTree, x)
-    else {
-
+    val links = bTree.links
+    if (links == null) {
+        insertIntoNode(bTree, x)
+    } else {
+        insert(findLink(bTree, x, links), x)
     }
 
 }
 
-fun <T : Comparable<T>> insertIntoNode(bTree: BTree<T>, x: T): Triple<BTree<T>, BTree<T>, BTree<T>>? {
-    val list = bTree.elements.toMutableList()
+private fun <T : Comparable<T>> findLink(
+    bTree: BTree<T>,
+    x: T,
+    links: List<BTree<T>>
+): BTree<T> {
+    val elements = bTree.elements.filterNotNull()
+    for (i in elements.indices) {
+        if (x < elements[i]) {
+            return links[i]
+        }
+    }
+    return links.last()
+}
 
-    var index = list.size / 2
+fun <T : Comparable<T>> insertIntoNode(bTree: BTree<T>, x: T) {
+//    val list = bTree.elements.toMutableList()
+
+    val list = insertInList(bTree.elements, x)
+
+
+    if (list.filterNotNull().size >= DEFAULT.MAX_SIZE) {
+        val mid = list.size / 2
+        val left = nodeOf(list.slice(0 until mid).filterNotNull())
+        val right = nodeOf(list.slice(mid + 1 until list.size).filterNotNull())
+        bTree.elements = listOf(list[mid])
+        bTree.links = listOf(left, right)
+    } else {
+        bTree.elements = list
+    }
+
+}
+
+fun <T : Comparable<T>> insertInList(list: List<T?>, x: T): List<T?> {
+    val mutList = list.toMutableList()
+    var index = mutList.size / 2
 
     while (true) {
         when {
-            list[index] == null -> {
-                list[index] = x
+            mutList[index] == null -> {
+                mutList[index] = x
                 break
             }
 
-            list[index]!! > x -> index -= index / 2
-            list[index]!! < x -> index -= index / 2
+            mutList[index]!! > x -> index -= index / 2
+            mutList[index]!! < x -> index += index / 2
+            mutList[index]!! == x -> break
         }
     }
-    return if (list.size >= DEFAULT.MAX_SIZE) {
-        val mid = list.size / 2
-        val left = list.slice(0 until mid).filterNotNull()
-        val right = list.slice(mid + 1 until list.size).filterNotNull()
-        val bTreeLeft = nodeOf(left)
-        val bTreeRight = nodeOf(right)
-        bTree.elements = listOf(list[mid])
-        bTree.links = listOf(bTreeLeft, bTreeRight)
-        return Triple(bTree, bTreeLeft, bTreeRight)
-    } else {
-        bTree.elements = list
-        null
-    }
-
+    return mutList
 }
