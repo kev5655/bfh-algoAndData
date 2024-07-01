@@ -74,20 +74,8 @@ fun <T : Comparable<T>> insertIntoNode(bTree: BTree<T>, x: T) {
 }
 
 fun <T : Comparable<T>> insertInList(list: List<T?>, x: T): List<T?> {
-    val mutList = list.toMutableList()
-    var index = mutList.size / 2
-
-    while (true) {
-        when {
-            mutList[index] == null -> {
-                mutList[index] = x
-                break
-            }
-
-            mutList[index]!! > x -> index -= index / 2
-            mutList[index]!! < x -> index += index / 2
-            mutList[index]!! == x -> break
-        }
-    }
-    return mutList
+    val mutableList = list.toMutableList()
+    mutableList.add(x)
+    mutableList.sortWith(compareBy(nullsLast()) { it })
+    return mutableList.toList()
 }
