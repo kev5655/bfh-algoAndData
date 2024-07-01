@@ -1,19 +1,25 @@
 package hash
 
+import java.lang.Math.floorMod
+
 class Data(val value: Int, val h1: Int, val h2: Int)
 
 private fun hashFn1(x: Int): Int {
-    return x % 13 // !!!UPDATE HASH FUNCTION
+//    val x = x % 13 // !!!UPDATE HASH FUNCTION
+    val x = floorMod(x, 11)
+    return x
 }
 
 private fun hashFn2(x: Int): Int {
-    return 1 + (x % 11) // !!!UPDATE HASH FUNCTION
+//    val x = 1 + (x % 11) // !!!UPDATE HASH FUNCTION
+    val x = 1 + (floorMod(x, 9))
+    return x
 }
 
 
 fun main() {
-    val m = 13 // !!!UPDATE TABLE_SIZE !!! 0 is included
-    val list = listOf(14, 21, 27, 28, 8, 18, 15, 36, 5, 2) // !!!UPDATE KEY'S
+    val m = 11 // !!!UPDATE TABLE_SIZE !!! 0 is included
+    val list = listOf(65, 33, 5, 19, 22, 15, 27, 12, 28, 1) // !!!UPDATE KEY'S
         .map { calcHash(it, ::hashFn1, ::hashFn2) }
     printHashTable(list)
 
@@ -24,6 +30,7 @@ fun doubleHashing(list: List<Data>, tableSize: Int): Array<Int?> {
     val hashArray: Array<Int?> = arrayOfNulls(tableSize)
 
     list.forEach { data ->
+        println("Insert: ${data.value} | " + hashArray.joinToString { x -> "${x}, " })
         if (hashArray[data.h1] == null) {
             hashArray[data.h1] = data.value
         } else {

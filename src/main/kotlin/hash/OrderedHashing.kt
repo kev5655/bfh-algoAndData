@@ -27,6 +27,7 @@ fun orderedHashing(list: List<Data>, tableSize: Int): Array<Int?> {
     val hashArray: Array<Int?> = arrayOfNulls(tableSize)
 
     list.forEach { data ->
+        println("Insert: ${data.value} | " + hashArray.joinToString { x -> "${x}, " })
         var currentIndex = data.h1
         var currentValue = data.value
 
