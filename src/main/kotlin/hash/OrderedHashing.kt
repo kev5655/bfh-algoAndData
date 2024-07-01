@@ -4,18 +4,22 @@ import java.lang.Math.floorMod
 
 
 private fun hashFn1(x: Int): Int {
-    return floorMod(x, 13) // !!!UPDATE HASH FUNCTION
+//    val y = floorMod(x, 13) // !!!UPDATE HASH FUNCTION
+    val y = floorMod(x, 11)
+    return y
 }
 
 private fun hashFn2(x: Int): Int {
 //    return index - (1 + value % 11) % 13 // !!!UPDATE HASH FUNCTION
-    return 1 + floorMod(x, 11)
+//    val y = 1 + floorMod(x, 11)
+    val y = 1 + floorMod(x, 9)
+    return y
 }
 
 
 fun main() {
-    val m = 13 // !!!UPDATE TABLE_SIZE !!! 0 is included
-    val list = listOf(14, 21, 27, 28, 8, 18, 15, 36, 5, 2) // !!!UPDATE KEY'S
+    val m = 11 // !!!UPDATE TABLE_SIZE !!! 0 is included
+    val list = listOf(65, 33, 5, 19, 22, 15, 27, 12, 28, 1) // !!!UPDATE KEY'S
         .map { calcHash(it, ::hashFn1, ::hashFn2) }
     printHashTable(list)
 
