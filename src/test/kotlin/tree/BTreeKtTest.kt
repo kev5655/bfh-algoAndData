@@ -30,14 +30,18 @@ class BTreeKtTest {
         val list = List(10) { null }
 
         var x = insertInList(list, 10)
-        assertEquals(10, x[5])
+        assertEquals(x, listOf(null, null, null, null, null, 10, null, null, null, null))
         x = insertInList(x, 5)
+        assertEquals(x, listOf(null, null, null, 5, null, 10, null, null, null, null))
         assertEquals(5, x[3])
         x = insertInList(x, 7)
+        assertEquals(x, listOf(null, null, null, 5, 7, 10, null, null, null, null))
         assertEquals(7, x[4])
         x = insertInList(x, 6)
+        assertEquals(x, listOf(null, null, 5, 6, 7, 10, null, null, null, null))
         assertEquals(6, x[3])
         x = insertInList(x, 11)
+        assertEquals(x, listOf(null, null, 5, 6, 7, 10, null, 11, null, null))
         assertEquals(11, x[6])
     }
 }
