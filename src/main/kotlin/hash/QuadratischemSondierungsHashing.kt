@@ -14,7 +14,7 @@ private fun sondierungsFn(j: Int, k: Int): Int {
     val x = (ceil(j / 2.0)).pow(2.0).toInt()
     // (−1)^j
     val y = (-1.0).pow(j).toInt()
-    return hashFn(k) + x * y // !!! UPDATE HASH FUNCTION
+    return hashFn(k) + x * y // !!! UPDATE HASH FUNCTION!
 }
 
 fun main() {
