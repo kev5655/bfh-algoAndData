@@ -10,7 +10,7 @@ private fun hashFn(x: Int): Int {
 private fun dynamicHashFn(index: Int, value: Int): Int {
 //    return index - (1 + value % 11) % 13 // !!!UPDATE HASH FUNCTION
 //    val x = hashFn(index - floorMod(1 + value, 11))
-    val x = hashFn(1 + floorMod(index, 9))
+    val x = hashFn(index + floorMod(value, 9))
     return x
 }
 
